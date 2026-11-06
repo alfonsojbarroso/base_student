@@ -33,3 +33,5 @@ build/
 .vscode/
 gists/
 src/main/resources/application-dev.properties
+
+test.sh

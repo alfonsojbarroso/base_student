@@ -133,3 +133,11 @@ No HTTP endpoints are currently exposed. Controllers, repositories, services, DT
 ## License
 
 No license has been specified for this project yet.
+
+##
+### Author
+
+| |
+| :---: |
+| **Dr. Alfonso José Barroso Barajas** |
+| *Technology Architect* |
