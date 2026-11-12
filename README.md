@@ -190,7 +190,10 @@ No test classes are currently present under `src/test/java`. Add unit and integr
 
 No license has been specified for this project yet.
 
+##
+### Author
 
-## Author
-
-Dr. Alfonso José Barroso Barajas
+| |
+| :---: |
+| **Dr. Alfonso José Barroso Barajas** |
+| *Technology Architect* |
