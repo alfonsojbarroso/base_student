@@ -9,6 +9,8 @@ Base Student is a REST API built with Spring Boot for managing student records. 
 - Map persistence models to response DTOs
 - Return structured business errors for invalid or missing records
 - Expose interactive OpenAPI/Swagger documentation
+- Run the API and PostgreSQL together with Docker Compose
+- Provide SonarQube project settings, including a JaCoCo XML report path
 
 ## Technology Stack
 
@@ -20,12 +22,16 @@ Base Student is a REST API built with Spring Boot for managing student records. 
 - PostgreSQL JDBC driver
 - Springdoc OpenAPI 3
 - Maven Surefire and Spring Boot test starters
+- Docker and Docker Compose for containerized development
+- SonarQube project configuration (`sonar-project.properties`)
 
 ## Requirements
 
 - JDK 21 or newer
 - PostgreSQL running locally or at a reachable host
 - No separate Maven installation; use the included Maven Wrapper
+- Docker Engine with the Compose plugin, if running with Docker
+- A reachable SonarQube server and SonarScanner/Maven Sonar plugin, if running analysis
 
 ## Getting Started
 
@@ -175,9 +181,51 @@ The packaged artifact is written to `target/`. Run it with:
 java -jar target/base_student-0.0.1-SNAPSHOT.jar
 ```
 
+## Code Coverage and SonarQube
+
+The repository includes `sonar-project.properties` with the project key, source and test paths, compiled class location, and the expected JaCoCo XML report at `target/site/jacoco/jacoco.xml`.
+
+Run the tests and SonarQube analysis with the Maven wrapper after configuring access to your SonarQube server:
+
+```bash
+./mvnw clean verify sonar:sonar
+```
+
+On Windows:
+
+```powershell
+.\mvnw.cmd clean verify sonar:sonar
+```
+
+Configure the SonarQube server URL and authentication token through your local environment or Maven settings. Do not commit credentials. JaCoCo report generation is not currently configured in `pom.xml`, so the report path above is only consumed when a JaCoCo report has been generated; configure the JaCoCo Maven plugin to publish coverage data.
+
+## Docker
+
+The multi-stage `Dockerfile` builds the application JAR and runs it on a Java 21 JRE image as a non-root user. Docker Compose starts the API with a PostgreSQL 16 database and waits for the database health check before starting the API:
+
+```bash
+docker compose up --build
+```
+
+On Windows, use the same command in PowerShell. The API is then available at `http://localhost:8080/student`; Swagger UI is at `http://localhost:8080/swagger-ui/index.html`.
+
+Stop the containers with:
+
+```bash
+docker compose down
+```
+
+The Compose file persists database data in the `pgdata` volume. Its default database password (`root`) is for local development only; change it and use managed secrets for any shared or production environment.
+
 ## Testing
 
-No test classes are currently present under `src/test/java`. Add unit and integration coverage for validation, service behavior, repository operations, HTTP endpoints, and error responses as the application evolves.
+Run the unit and integration tests with:
+
+```bash
+./mvnw test
+```
+
+Test sources include service tests and a controller integration test that uses Testcontainers to run PostgreSQL. Docker must be available to execute the Testcontainers test.
 
 ## Current Limitations
 
